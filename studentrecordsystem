@@ -1,0 +1,146 @@
+#include<bits/stdc++.h>
+using namespace std;
+class Student{
+    private:
+    string name; 
+    int rollno;
+    int noofsubjects;
+    vector<int> marks;
+   public:
+   void inputDetails(){  
+       cout<<"Enter your name: ";
+   
+        getline(cin,name);
+       cout<<"Enter your Roll NO:";
+       cin>>rollno;
+       cout<<"Enter your no of subjects :";
+       cin>>noofsubjects;
+       while(noofsubjects<=0){
+            cout<<"Invalid number of Subjects. Enter again:";
+            cin>>noofsubjects;
+       }
+
+       marks.clear();
+       for(int i=0;i<noofsubjects;i++){
+        int m;
+          cout<<"Enter marks for subject "<< i+1 <<": ";
+        cin>>m;
+       while(m<0 || m>100){
+         cout<<"Invalid number of Marks. Enter between 0-100:";
+         cin>>m;
+       }
+        marks.push_back(m);
+       }
+
+   };
+ 
+  
+   float avearagemarks(){
+    if(marks.empty()) return 0;
+    int sum=0;
+    for(int m:marks) sum+=m;
+    return (float)sum/marks.size();
+   }
+
+
+   string calculateGrade(){
+    for(int m:marks){
+      if(m<33) return "FAIL";
+    }
+    float avg=avearagemarks();
+    if(avg>=90)  return "Excellent";
+    else if(avg>=75) return "Good";
+    else if(avg>=50) return "Average";
+    else return "Poor";
+
+   }
+   
+   int getmaxmarks(){
+    if(marks.empty()) return 0;
+    return *max_element(marks.begin(),marks.end());
+   }
+   int getminmarks(){
+     if(marks.empty()) return 0;
+    return *min_element(marks.begin(),marks.end());
+   }
+   bool ispass(){
+    for (int m:marks){
+      if(m<33) return false;
+    }
+    return true;
+   }
+   void displayDetails(){
+    cout<<"\n--- Student Report---\n";
+    cout<< "Name:" << name << endl;
+
+    cout<< "Roll No:"<<  rollno << endl;
+  
+    cout<<"Marks: ";
+    for(int m:marks) cout<< m << " ";
+    cout<<endl;
+    cout<< "Status:" << (ispass() ? "PASS" : "FAIL")<<endl;
+    cout<<"\n Average:"<< avearagemarks() <<endl;
+    cout<<"Grade: "<< calculateGrade () <<endl;
+    cout<<  "Max Marks:"<< getmaxmarks() << endl;
+    cout<< "Min Marks:"<< getminmarks() <<endl;
+   }
+
+};
+int main() {
+   vector<Student> students;
+    int choice;
+
+    do {
+        cout << "\n===== MENU =====\n";
+        cout << "1. Add Student\n";
+        cout << "2. Display All Students\n";
+        cout << "3. Find Topper\n";
+  cout << "4. Exit\n";
+        cout << "Enter choice: ";
+ cin >> choice;
+ if(cin.fail()) {
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cout << "Invalid input. Try again.\n";
+    continue;
+}
+
+     if(choice == 1) {
+         Student s;
+         cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            s.inputDetails();
+      students.push_back(s);
+        }
+
+   else if(choice == 2) {
+    if(students.empty()) {
+    cout << "No students available.\n";
+     } else {
+   for(auto &s : students) {
+    s.displayDetails();
+    }
+            }
+        }
+
+   else if(choice == 3) {
+     if(students.empty()) {
+        cout << "No students available.\n";
+   } else {
+       int topperIndex = 0;
+
+      for(int i = 1; i < students.size(); i++) {
+        if(students[i].avearagemarks() >
+      students[topperIndex].avearagemarks()) {
+     topperIndex = i;
+            }
+       }
+
+    cout << "\n--- Topper ---\n";
+    students[topperIndex].displayDetails();
+            }
+        }
+
+    } while(choice != 4);
+
+    return 0;
+}
