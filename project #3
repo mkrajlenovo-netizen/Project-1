@@ -1,0 +1,170 @@
+#include<iostream>
+using namespace std;
+
+class Item{
+protected:
+    int id;
+    string title;
+    bool issued;
+
+public:
+    Item(int i,string t){
+        id=i;
+        title=t;
+        issued=false;
+    }
+
+    virtual void displayDetails(){
+        cout<<"\nID: "<<id<<endl;
+        cout<<"Title: "<<title<<endl;
+
+        if(issued)
+        cout<<"Status: Issued"<<endl;
+        else
+        cout<<"Status: Available"<<endl;
+    }
+
+    void issueItem(){
+        if(issued){
+            cout<<"Item already issued\n";
+        }
+        else{
+            issued=true;
+            cout<<"Item issued successfully\n";
+        }
+    }
+
+    void returnItem(){
+        if(!issued){
+            cout<<"Item was not issued\n";
+        }
+        else{
+            issued=false;
+            cout<<"Item returned successfully\n";
+        }
+    }
+
+    bool isAvailable(){
+        return !issued;
+    }
+
+    virtual int calculateFine(int daysLate){
+        return daysLate*2;
+    }
+};
+
+class Book:public Item{
+    string author;
+
+public:
+    Book(int i,string t,string a):Item(i,t){
+        author=a;
+    }
+
+    void displayDetails() override{
+        cout<<"\nBOOK DETAILS\n";
+        Item::displayDetails();
+        cout<<"Author: "<<author<<endl;
+    }
+};
+
+class Magazine:public Item{
+    int issueNumber;
+
+public:
+    Magazine(int i,string t,int issueNo):Item(i,t){
+        issueNumber=issueNo;
+    }
+
+    void displayDetails() override{
+        cout<<"\nMAGAZINE DETAILS\n";
+        Item::displayDetails();
+        cout<<"Issue Number: "<<issueNumber<<endl;
+    }
+};
+
+int main(){
+
+    Book b1(101,"C++ Programming","Bjarne");
+    Magazine m1(201,"Tech Monthly",45);
+
+    int choice;
+    int availableCount=2;
+
+    do{
+        cout<<"\n1.Display Book\n";
+        cout<<"2.Display Magazine\n";
+        cout<<"3.Issue Book\n";
+        cout<<"4.Return Book\n";
+        cout<<"5.Issue Magazine\n";
+        cout<<"6.Return Magazine\n";
+        cout<<"7.Available Items\n";
+        cout<<"8.Calculate Fine\n";
+        cout<<"9.Exit\n";
+
+        cout<<"Enter choice: ";
+        cin>>choice;
+
+        switch(choice){
+
+            case 1:
+            b1.displayDetails();
+            break;
+
+            case 2:
+            m1.displayDetails();
+            break;
+
+            case 3:
+            if(b1.isAvailable())
+            availableCount--;
+
+            b1.issueItem();
+            break;
+
+            case 4:
+            if(!b1.isAvailable())
+            availableCount++;
+
+            b1.returnItem();
+            break;
+
+            case 5:
+            if(m1.isAvailable())
+            availableCount--;
+
+            m1.issueItem();
+            break;
+
+            case 6:
+            if(!m1.isAvailable())
+            availableCount++;
+
+            m1.returnItem();
+            break;
+
+            case 7:
+            cout<<"Available Items: "<<availableCount<<endl;
+            break;
+
+            case 8:{
+                int days;
+                cout<<"Enter late days: ";
+                cin>>days;
+
+                cout<<"Fine Amount: "<<b1.calculateFine(days)<<endl;
+                break;
+            }
+
+            case 9:
+            cout<<"Exiting...\n";
+            break;
+
+            default:
+            cout<<"Invalid Choice\n";
+        }
+
+    }while(choice!=9);
+
+    return 0;
+}
